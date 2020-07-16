@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Dokkan Battle</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Oswald:400,700|Work+Sans:300,400,700" rel="stylesheet">
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="css/animate.css">    
+    
+    <link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
+  
+    <link rel="stylesheet" href="css/aos.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    
+  
+<script>
+
+let links = await youtubeLinks("https://youtu.be/vP3hIN2EFtA");
+ 
+</script>
+	
+  </head>
+  
+  <script>
+	$( document ).ready(function() {
+		
+	/*$(".img-bg-1").on('click', function(event){
+	
+		alert(this.id);
+				
+	});*/
+	
+	
+	var favoriteListAll=[];
+
+	 var favlist = [];
+	 var favitem = 0;
+	 
+	 var favlist2 = [];
+	 var favitem2 = 0;
+	 
+	 var Name1 = localStorage.getItem("name");
+	 
+	 $(".add").click(function(){
+	localStorage.removeItem("favlist");
+	 var formId = $(this).attr('id');
+	 alert(formId);
+	 if(formId!=null){
+	 favlist[favitem] = formId;
+	 localStorage.setItem("favlist", JSON.stringify(formId));
+	 
+	 var tempName, tempfavlist;
+	tempName=localStorage.getItem("name");
+	tempfavlist=localStorage.getItem("favlist");
+		
+	var myfavdata="&name="+tempName+"&favlist="+tempfavlist;
+	$.ajax({
+	type: "POST",
+	data:  myfavdata ,
+	url: "http://127.0.0.1:8081/favour",
+	success: function (result) {
+		//alert(result);
+		if (result == "OK") {
+		alert("Your favourite list are saved");
+		} else {
+		alert("Your favourite list are not saved");
+		}
+		}, error: function (xhr, textStatus, errorThrown) {
+		alert("Favourite_List is lose");
+		console.log(textStatus);
+		}
+	});
+	 }
+	 })
+	 
+	 $("#show").click(function(){
+        var tempName;
+		tempName=localStorage.getItem("name");
+		
+		var name="&name="+tempName;
+        
+        $.ajax({
+          url: "http://127.0.0.1:8081/readfavourlist",          
+          type: "POST",
+          data: name ,
+          success: function (result) {
+            result = JSON.parse(result);
+            $("#favlist").empty();
+            $.each(result, function(i,fav){
+			  var favourite = fav.favlist;
+              favlist2[favitem2] = favourite.substring(1, favourite.length - 1);
+			  
+			  favitem+=1;
+			  $("#favlist").append('<div class="container"><div class="row"><div class="col-1"></div><font color="Orange"><p>'+ favourite +'</p></font></div></div>');
+			  
+			  //}
+			});
+            console.log(result);
+            //alert(result);
+          },
+          error: function(result){
+              console.log(result);
+            }
+        });
+        
+		  });
+		  
+     $("#delete").click(function(){
+		var tempName,tempdelfav;
+		tempName = localStorage.getItem("name");
+		tempdelfav = localStorage.getItem("favlist");
+		//tempdelfav = $("#favlist").val();
+		var delData="&name="+tempName+"&favlist="+tempdelfav;
+		alert(delData);
+
+        $.ajax({
+           url: "http://127.0.0.1:8081/removefavourlist",          
+           type: "POST",
+           data: delData ,
+           success: function (result) {
+			 if (result == "OK"){
+			 alert("the data was delete");
+            }
+            else{
+             alert(result);
+             console.log(result);
+			 }
+           },
+           error: function(result){
+               console.log(result);
+             }
+         });
+});
+
+     $("#deleteall").click(function(){
+		var tempName,tempdelfav;
+		tempName = localStorage.getItem("name");
+		tempdelfav = localStorage.getItem("favlist");
+		//tempdelfav = $("#favlist").val();
+		var delData="&name="+tempName+"&favlist="+tempdelfav;
+		alert(delData);
+
+        $.ajax({
+           url: "http://127.0.0.1:8081/removefavourlistall",          
+           type: "POST",
+           data: delData ,
+           success: function (result) {
+			 if (result == "OK"){
+			 alert("the data was delete");
+            }
+            else{
+             alert(result);
+             console.log(result);
+			 }
+           },
+           error: function(result){
+               console.log(result);
+             }
+         });
+});
+	 
+	 
+	 
+	 
+	/*$('#buttonID').click(function() {
+		// make an ajax call
+		alert($('#formID').serialize());
+    $.ajax({
+            dataType: 'jsonp',
+            jsonpCallback: '_wrapper',
+            data: $('#formID').serialize(),
+            type: 'POST',
+            url: "http://127.0.0.1:9999/favour",
+            success: handleButtonResponse,
+        });
+    });
+	
+    function handleButtonResponse(data){
+      alert(data);
+      // parse the json string
+      var jsonObject = JSON.parse(data);
+      $('#reponseID').append( jsonObject.message );
+    }
+	
+	$("#buttonme").click(function(){
+		alert("Loading now, please wait.");
+		var tempName, tempPassword;
+		var tempID=$(".img-bg-1").val();
+		
+		tempName=$("#Email").val();
+		tempPassword=$("#passwd").val();
+		tempID=$(".img-bg-1").val();
+		
+		var mydata="&ID="+tempID;
+		
+			
+			$.ajax({
+				url: "http://127.0.0.1:9999/Register", 
+				type: 'POST',
+				data: mydata,
+				success: function(result){
+					alert("Registration success");
+					alert("Thanks for creating an account, your username is: " + tempName + "and password is: "+ tempPassword + ". Enjoy!");
+					window.location.href = "http://127.0.0.1:9999/favour";
+					}, error: function (xhr, textStatus, errorThrown) {
+						alert("Registration failed, please try again with other username");
+						console.log(textStatus);
+      		}
+				});
+			
+	});*/
+	
+	
+	
+	});
+  </script>
+  
+  <body>
+  
+  <div id="overlayer"></div>
+  <div class="loader">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <div class="site-wrap">
+
+    
+
+    <div class="site-mobile-menu">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div> <!-- .site-mobile-menu -->
+    
+    
+    <div class="site-navbar-wrap js-site-navbar bg-white">
+      
+      <div class="container">
+        <div class="site-navbar bg-light">
+          <div class="row align-items-center">
+            <div class="col-2">
+              <h2 class="mb-0 site-logo"><a href="http://www.dragonballz.com/" class="font-weight-bold text-uppercase">Dragon Ball</a></h2>
+            </div>
+            <div class="col-10">
+              <nav class="site-navigation text-right" role="navigation">
+                <div class="container">
+                  <div class="d-inline-block d-lg-none ml-md-0 mr-auto py-3"><a href="#" class="site-menu-toggle js-menu-toggle text-black"><span class="icon-menu h3"></span></a></div>
+
+                  <ul class="site-menu js-clone-nav d-none d-lg-block">
+                  
+                    <li class="has-children active">
+                     
+                      <ul class="dropdown arrow-top">
+                        <li><a href="testimonials.html">Testimonials</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="why-choose-us.html">Why Choose Us</a></li>
+                        <li class="has-children">
+                          <a href="#">Sub Menus</a>
+                          <ul class="dropdown">
+                            <li><a href="testimonials.html">Testimonials</a></li>
+                            <li><a href="gallery.html">Gallery</a></li>
+                            <li><a href="why-choose-us.html">Why Choose Us</a></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                    <li><a href="/Login">Logout</a></li>
+                    <li><a href="/Login">Login</a></li>
+                    <li><a href="/Register"><span class="d-inline-block bg-primary text-white btn btn-primary">Signup</span></a></li>
+                  </ul>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="site-blocks-cover inner-page overlay" style="background-image: url(images/5.jpg);" data-aos="fade" data-stellar-background-ratio="0.1">
+      <div class="row align-items-center justify-content-center">
+        <div class="col-md-5 text-center" data-aos="fade">
+          <h1 class="text-uppercase">Dokkan Battle 5th anniversary</h1>
+          <span class="caption d-block text-white">Characters</span>
+        </div>
+      </div>
+    </div>  
+
+    <div class="slant-1"></div>
+
+    
+    
+  <div class="site-half first-section">
+
+
+
+
+   
+
+  <div class="site-half block">
+    <div class="img-bg-1 right" style="background-image: url('images/37.jpg');" id="CK2943-102" data-aos="fade" data-aos-delay="100"></div>
+    <div class="container">
+      <div class="row no-gutters align-items-stretch"></div>
+        <div class="col-lg-4 mr-lg-auto py-9">
+          
+          <h2 class="site-section-heading text-uppercase font-secondary mb-5">5th Anniversary Campaign!</h2>
+         
+
+          <p>
+            Transdimensional Fusions! Divine Transcendence! Dokkan 5th Anniv. Celebration is on!
+            Thank you for your support! Dragon Ball Z Dokkan Battle is celebrating its 5th anniversary!
+            Events will be available one after another to make the celebration more exciting!</p>  
+		 
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="site-half block">
+    <div class="img-bg-1" style="background-image: url('images/gogeta.jpg');" id="Ultimate and Supreme Fusion Gogeta" data-aos="fade"></div>
+    <div class="container">
+      <div class="row no-gutters align-items-stretch">
+        <div class="col-lg-5 ml-lg-auto py-5">
+          
+          <h2 class="site-section-heading text-uppercase font-secondary mb-5">Ultimate and Supreme Fusion</h2>
+
+          <p>Dragon Ball Super: Broly</p>
+
+          <p>In Broly, Gogeta displays mixed traits of his Fusion Reborn and GT selves, almost always seen with a confident, almost arrogant smirk on his face, but remaining practical and efficient, moreso than Vegito. He rarely speaks during his battle with Broly, only taunting briefly before resuming his attacks. In a similar vein to Vegeta, Gogeta can be ruthless once he had determined a foe to be a threat, and will show no mercy or hesitation in eliminating them as demonstrated during the climax of his battle with Broly. However, he still retains Goku's benevolence, as after Broly was no longer a threat and teleported away, Gogeta merely smirked and ceased his attempt on Broly's life. Additionally, he merely restrained Frieza from firing upon Cheelai and Lemo's ship, rather than killing him as he easily could have. He also retains Goku's respectful nature, such as referring to Whis as "Whis-san". This personality was retained in Super Dragon Ball Heroes, where Gogeta taunted Hearts at the beginning of their battle but quickly shifted into a more efficient attitude to overpower the Core Area Warrior.</p> 
+		  <button class="btn add" id="Ultimate and Supreme Fusion Gogeta" value="Ultimate and Supreme Fusion Gogeta">Add </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-half block">
+    <div class="img-bg-1 right" style="background-image: url('images/vegeto.jpg');" id="Ultimate and Invincible Fusion Vegeto" data-aos="fade" data-aos-delay="100"></div>
+    <div class="container">
+      <div class="row no-gutters align-items-stretch">
+        <div class="col-lg-5 mr-lg-auto py-5">
+          
+          <h2 class="site-section-heading text-uppercase font-secondary mb-5">Ultimate and Invincible Fusion</h2>
+          <p>"Future" Trunks Saga</p>
+
+          <p>During the intense battle with Fused Zamasu, Goku uses all his power in his God Kamehameha to stop the Holy Wrath. Afterwards, Zamasu is damaged and the left side of his face begins to mutate, which is a prelude to his corrupted state. Goku again attacks Zamasu but Zamasu grievously injures him and he falls down after exhausting the rest of his energy with the use of his Super Saiyan Blue Kaio-ken technique. They realize Goku's actions only made Fused Zamasu grow angry. Fused Zamasu angrily powers up, and his right arm begins to mutate in a similar fashion as his face. Gowasu points out Fused Zamasu's potential weakness: while Future Zamasu's body is immortal, Goku Black's body is not, and there is no synergy between Fused Zamasu's soul and body. This can cause his mortal and immortal halves to conflict, creating openings, but they will need large amounts of power to even deal any damage. Goku suggests using Potara so he and Vegeta can fuse, but Vegeta is completely against the idea. Goku asks Gowasu how come he and Vegeta split before when he was told the effects of Potara are permanent, and Gowasu explains that fusion not involving a Supreme Kai will remain for one hour. Vegeta reluctantly accepts the Potara earring after realizing they have no other options and he and Goku eat a Senzu Bean. Vegeta and Goku, with one hour left to finish things, put on the earrings, and they fuse, and Vegito emerges.</p>  
+		  <button class="btn add" id="Ultimate and Invincible Fusion Vegeto" value="Ultimate and Invincible Fusion Vegeto">Add </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+	 
+	 <p>
+	 <div class="container">
+	   <div id="favlist"></div>
+  <button id="show" type="button" class="btn btn-primary">show the favourlist</button>
+  <button id="delete" type="button" class="btn btn-warning">delete the latest favourlist</button>
+  <button id="deleteall" type="button" class="btn btn-danger">drop all the favourlist</button>
+</div>
+	 </p>
+	 
+  <div class="site-section bg-light">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-md-12" data-aos="fade">
+            <h2 class="site-section-heading text-center text-uppercase">Feature Characters</h2>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-6 text-center mb-5" data-aos="fade-up" data-aos-delay="100">
+            <img src="images/b.png" alt="Image" class="img-fluid rounded w-50 mb-4">
+            <h2 class="h5 text-uppercase">Parents' Guidance</h2>
+            <span class="d-block mb-4">Bardock & Gine</span>
+            <p class="lead">When Bardock brings the Attack Ball at night, he and Gine put the little and distraught Kakarot inside. 
+              Gine suggests they all flee, but Bardock says it is no use since they would immediately be found through the scouters. 
+              Gine nervously reassures her son that if his father is just overthinking this, they will come after him right away. 
+              Bardock warns Kakarot not to look at the full moon; they will tell Raditz about this too and Kakarot's whereabouts.</p>
+            <p>
+              <button class="btn add" id="Bardock and Gine" value="Bardock and Gine">Add </button>
+             
+            </p>
+          </div>
+          <div class="col-md-6 text-center mb-5" data-aos="fade-up" data-aos-delay="200">
+            <img src="images/t.png" alt="Image" class="img-fluid rounded w-50 mb-4">
+            <h2 class="h5 text-uppercase">Human Pride</h2>
+            <span class="d-block mb-4">Super Saiyan Trunks (Future) & Mai (Future)</span> 
+            <p class="lead">Future Trunks fixes the jar and proceeded to learned the sealing technique, while Bulma leaves to distract Zamasu in order to buy time. He and Future Mai headed out shortly after and witnessed Zamasu lifting Bulma by her coat (the same way Black held Future Bulma). Future Trunks powers up and uses it on him, which seemed successful (that is until realizing that Goku forgot the amulet seal). Zamasu had broken free. Trunks and the others watched on as Black and Future Zamasu fused using the Potara earrings.</p>
+            <p>
+              <button class="btn add" id="Super Saiyan Trunks (Future) and Mai (Future)" value="Super Saiyan Trunks (Future) and Mai (Future)">Add </button>
+            </p>
+          
+          </div>
+        </div>
+      </div>  
+    </div>
+  
+    <div class="site-section section-counter">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <p class="mb-5"><img src="images/5th.jpg" alt="Image" class="img-fluid"></p>
+          </div>
+          <div class="col-lg-5 ml-auto">
+           
+
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="counter">
+                 
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="counter">
+                 
+                </div>
+              </div>
+			  
+			  <div class="col-lg-6">
+                <div class="counter">
+                  <iframe width="560" height="315" src="https://www.youtube.com/embed/vP3hIN2EFtA" 
+                  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen></iframe>
+</iframe>
+                </div>
+              </div>
+
+			  
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="py-5 bg-primary">
+      <div class="container">
+        <div class="row align-items-center justify-content-center">
+          <div class="col-md-6 text-center mb-3 mb-md-0">
+            <h2 class="text-uppercase text-white mb-4" data-aos="fade-up">Dokkan Battle</h2>
+            <a href="https://www.facebook.com/dokkanbattle.dbz.ch/?brand_redir=1631595890393152" class="btn btn-bg-primary font-secondary text-uppercase" data-aos="fade-up" data-aos-delay="100">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="site-footer bg-dark">
+      <div class="container">
+        
+
+        <div class="row">
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h3 class="footer-heading mb-4 text-white">About</h3>
+            <p>Dokkan Battle</p>
+            <p><a href="https://dbz-dokkan.bngames.net/en/" class="btn btn-primary text-white px-4">Read More</a></p>
+          </div>
+          <div class="col-md-5 mb-4 mb-md-0 ml-auto">
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <h3 class="footer-heading mb-4 text-white">Quick Menu</h3>
+                  <ul class="list-unstyled">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contacts</a></li>
+                    <li><a href="#">Privacy</a></li>
+                  </ul>
+              </div>
+           
+            </div>
+
+          
+          </div>
+
+          
+        
+        </div>
+        <div class="row pt-5 mt-5 text-center">
+          <div class="col-md-12">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+
+            
+          </div>
+          
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.stellar.min.js"></script>
+
+  <script src="js/jquery.waypoints.min.js"></script>
+  <script src="js/jquery.animateNumber.min.js"></script>
+  <script src="js/aos.js"></script>
+
+  <script src="js/main.js"></script>
+
+  
+  </body>
+</html>
